@@ -1,5 +1,5 @@
-from sqlalchemy import  Column, Integer, String
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from sqlalchemy import  Column, Integer, String, text
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 
 # Database connection details (replace with your actual credentials)
@@ -8,6 +8,7 @@ DATABASE_URL = "postgresql+asyncpg://postgres:admin@localhost:5432/database_test
 
 engine = create_async_engine(DATABASE_URL)
 SessionLocal = async_sessionmaker(engine, expire_on_commit=False, autocommit=False, autoflush=False)
+
 
 
 
