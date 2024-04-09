@@ -1,14 +1,47 @@
+import os
+import dotenv
+
 from sqlalchemy import  Column, Integer, String, text
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
+from todos.__db__.schema import create_all_tables
+
+dotenv.load_dotenv()
+
+USER_NAME = os.getenv("USER_NAME")
+PASSWORD = os.getenv("PASSWORD")
+HOST = os.getenv("HOST")
+PORT = os.getenv("PORT")
+DATABASE = os.getenv("DATABASE")
+
+async def create_db():
+    db_name = DATABASE
+    # db_url = "postgresql://{USER_NAME}:{PASSWORD}@{HOST}:{PORT}/postgres"
+    engine = create_async_engine(f"postgresql+asyncpg://{USER_NAME}:{PASSWORD}@{HOST}:{PORT}/postgres", isolation_level="AUTOCOMMIT")
+    # engine = create_engine(db_url)
+    try:
+        
+        async with engine.connect() as conn:
+            await conn.execute(text(f"CREATE DATABASE {db_name}"))
+        print(f"Database '{db_name}' created successfully")
+    except Exception as e:
+        if 'already exists' in str(e):
+            print(f"Database '{db_name}' already exists")
+        else:
+            # If any other error occurs, print the error
+            print("An error occurred:", e)
+    finally:
+        await engine.dispose()
 
 # Database connection details (replace with your actual credentials)
-DATABASE_URL = "postgresql+asyncpg://postgres:admin@localhost:5432/database_test"
+DATABASE_URL = f"postgresql+asyncpg://{USER_NAME}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}"
 
 
 engine = create_async_engine(DATABASE_URL)
 SessionLocal = async_sessionmaker(engine, expire_on_commit=False, autocommit=False, autoflush=False)
 
+async def create_all_tables_async():
+    return await create_all_tables(engine)
 
 
 

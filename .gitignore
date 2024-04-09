@@ -1,2 +1,8 @@
+# backend 
+
 backend/venv/
-__pycache__/
+
+# Python cache files
+backend/__pycache__/
+backend/*.py[cod]
+backend/*$py.class

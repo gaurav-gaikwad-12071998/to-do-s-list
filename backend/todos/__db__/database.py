@@ -10,9 +10,7 @@ class DatabaseService():
         self.base = Base
         self.table_class = table
         
-    async def create_all_tables(self):
-        async with engine.begin() as conn:
-            await conn.run_sync(self.base.metadata.create_all)
+    
             
     async def execute_query(self, query:any, params:dict={}, return_value:bool=False):
         try:

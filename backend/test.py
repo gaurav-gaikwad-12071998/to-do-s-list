@@ -69,7 +69,7 @@
 #     # async_sessionmaker(engine)
     
 
-from todos import RoleTable, UserTable
+from todos import RoleTable, UserTable, connect_db
 from todos.__db__.types.table_user import userInsertParams
 from todos.__db__.types.table_role import roleInsertParams
 from sqlalchemy import UUID
@@ -107,11 +107,12 @@ async def main():
     result = await user_table.delete_by_id('91619ebf-13aa-4e2c-8208-d6faf2d1204b')
     print(result)
     
-    
+import asyncio    
     
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+    asyncio.run(connect_db())
+    # import asyncio
+    # asyncio.run(main())
 
 # import bcrypt
 # # salt = bcrypt.gensalt()
