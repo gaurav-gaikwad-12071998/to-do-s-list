@@ -9,8 +9,8 @@ from uuid import uuid4
 
 class UserCategoryTable(DatabaseService):
     
-    def __init__(self):
-        super().__init__(UserCategory)
+    def __init__(self, table_class:UserCategory):
+        super().__init__(table_class)
         self.primary_key = "user_category_id"
         
     async def insert(self, user_category_params:user_categoryInsertParams):
@@ -22,51 +22,68 @@ class UserCategoryTable(DatabaseService):
         except Exception as e:
             print(e)
             await session.rollback()
+            raise e
         finally:
             await session.close()
             
     async def get_by_id(self, id:str):
-        
-        query = f'''
-            SELECT * 
-            FROM public.{self.table_class.__tablename__}
-            WHERE {self.primary_key} = :{self.primary_key}
-        '''
-        params = {
-            self.primary_key : id
-        }
-        result = await self.execute_query(query, params, return_value=True)
-        return result[0]
+        try:
+            query = f'''
+                SELECT * 
+                FROM public.{self.table_class.__tablename__}
+                WHERE {self.primary_key} = :{self.primary_key}
+            '''
+            params = {
+                self.primary_key : id
+            }
+            result = await self.execute_query(query, params, return_value=True)
+            return result[0]
+        except Exception as e:
+            raise e
     
    
     async def update_by_id(self, id:str, updated_data:dict):
+        try:
+            if(self.primary_key in updated_data):
+                del updated_data[self.primary_key]
+            
+            set_clause = list(map(lambda x: x+" = :"+x, list(updated_data.keys())))
+            query = f'''
+                UPDATE public.{self.table_class.__tablename__}
+                SET {", ".join(set_clause)}
+                WHERE {self.primary_key} = :{self.primary_key} 
+                RETURNING *
+            '''
         
-        if(self.primary_key in updated_data):
-            del updated_data[self.primary_key]
+            params = {
+                self.primary_key : id,
+                **updated_data
+            }
+            
+            return await self.execute_query(query, params, return_value=True)
+        except Exception as e:
+            raise e
         
-        set_clause = list(map(lambda x: x+" = :"+x, list(updated_data.keys())))
-        query = f'''
-            UPDATE public.{self.table_class.__tablename__}
-            SET {", ".join(set_clause)}
-            WHERE {self.primary_key} = :{self.primary_key} 
-            RETURNING *
-        '''
-    
-        params = {
-            self.primary_key : id,
-            **updated_data
-        }
-        
-        return await self.execute_query(query, params, return_value=True)
-    
     async def delete_by_id(self, id:str):
+        try:
+            query = f'''
+                DELETE FROM public.{self.table_class.__tablename__}
+                WHERE {self.primary_key} = :{self.primary_key} 
+            '''
+            params = {
+                self.primary_key : id
+            }
+            
+            return await self.execute_query(query, params)
+        except Exception as e:
+            raise e
         
-        query = f'''
-            DELETE FROM public.{self.table_class.__tablename__}
-            WHERE {self.primary_key} = :{self.primary_key} 
-        '''
-        params = {
-            self.primary_key : id
-        }
-        
-        return await self.execute_query(query, params)
+    async def get_all(self):
+        try:
+            query = f'''
+                SELECT * EXCLUDE ( password )
+                FROM public.{self.table_class.__tablename__}
+            '''
+            return await self.execute_query(query, return_value=True)
+        except Exception as e:
+            raise e

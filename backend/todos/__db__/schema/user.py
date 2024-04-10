@@ -1,8 +1,7 @@
 
 from todos.__db__.schema import Base
 from sqlalchemy import Column, UUID, VARCHAR, DATE, BOOLEAN, TIMESTAMP, ForeignKey, func
-from todos.__core__ import constants
-from argon2 import PasswordHasher
+
 
 
 
@@ -21,16 +20,8 @@ class User(Base):
     created_at = Column(TIMESTAMP, default=func.now())
     updated_at = Column(TIMESTAMP, default=func.now(), onupdate=func.now())
     
-    password_hasher = PasswordHasher()
     
-    async def hash_password(self):
-        self.password =  self.password_hasher.hash(self.password.encode(), salt=constants.DB_SALT)
-        
-    async def verify_password(self, hashed_password, user_input_password):
-        try:
-          self.password_hasher.verify(hashed_password, user_input_password)
-          return True
-        except:
-          return False
+    
+    
       
         

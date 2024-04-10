@@ -7,6 +7,6 @@ class Role(Base):
     __tablename__ = "role"
     
     role_id = Column(UUID, primary_key=True)
-    role_title = Column(VARCHAR(10))
+    role_title = Column(VARCHAR(10), unique=True)
     role_description = Column(VARCHAR(50))
     

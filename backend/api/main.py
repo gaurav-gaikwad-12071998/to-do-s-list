@@ -1,11 +1,17 @@
 
-from fastapi import FastAPI
+import asyncio
+from fastapi import Depends, FastAPI
 # from api.controllers import translate, at_translate
 from fastapi.middleware.cors import CORSMiddleware
 from api.route import get_routes
 
+from todos import connect_db
+from todos import RoleService
+
 async def lifespan(app: FastAPI):
-    
+    await connect_db()
+    role_service = RoleService()
+    await role_service.create_roles()
     yield
     
 
