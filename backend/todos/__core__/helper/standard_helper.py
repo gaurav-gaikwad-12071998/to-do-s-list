@@ -1,6 +1,6 @@
 from argon2 import PasswordHasher
 
-from api.__core__ import constants
+from todos.__core__ import constants
 
 password_hasher: PasswordHasher = PasswordHasher()
 
@@ -13,3 +13,6 @@ def verify_password( hashed_password, user_input_password):
         return True
     except:
         return False
+
+def is_subset(list1, list2):
+  return all(element in list1 for element in list2)

@@ -4,21 +4,24 @@ from fastapi import Depends, FastAPI
 # from api.controllers import translate, at_translate
 from fastapi.middleware.cors import CORSMiddleware
 from api.route import get_routes
+from api.tags import tags_metadata
 
 from todos import connect_db
-from todos import RoleService
-
+from todos import RoleService, CategoryService
 async def lifespan(app: FastAPI):
     await connect_db()
     role_service = RoleService()
+    category_service = CategoryService()
     await role_service.create_roles()
+    await category_service.create_default_categories()
     yield
     
 
 app = FastAPI(
     title="FastAPI with Swagger UI Example",
     description="A simple FastAPI example with Swagger UI for documentation",
-    lifespan=lifespan
+    lifespan=lifespan,
+    openapi_tags= tags_metadata
 )
 
 origins = [

@@ -1,9 +1,10 @@
-from todos.__db__.schema import Base
 from sqlalchemy import Column, UUID, VARCHAR, TEXT, TIMESTAMP, ForeignKey, func
 
+from todos.__db__.schema import Base
+from todos.__core__ import constants
 
 class Task(Base):
-    __tablename__ = "task"
+    __tablename__ = constants.TABLE_NAME_MAPPER["TASK"]
     
     task_id = Column(UUID, primary_key=True)
     task_title = Column(VARCHAR(100))

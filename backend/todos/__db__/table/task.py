@@ -24,6 +24,18 @@ class TaskTable(DatabaseService):
             raise e
         finally:
             await session.close()
+    
+    async def insert_all(self, data_list: list[dict]):
+        session = self.db()
+        try:
+            # Use add_all for bulk insertion
+            session.add_all([self.table_class(**item) for item in data_list])
+            await session.commit()
+        except Exception as e:
+            await session.rollback()
+            raise e
+        finally:
+            await session.close()
             
     async def get_by_id(self, id:str):
         try:

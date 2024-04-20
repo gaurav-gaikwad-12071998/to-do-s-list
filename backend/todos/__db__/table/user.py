@@ -14,13 +14,12 @@ class UserTable(DatabaseService):
         self.primary_key = "user_id"
         
     async def insert(self, user_params:userInsertParams):
-        new_user = User(**user_params)
-        
         session = self.session()
         try:
             new_user = self.table_class(**user_params)
             session.add(new_user)
             await session.commit()
+            return user_params
             
         except Exception as e:
             
@@ -40,7 +39,7 @@ class UserTable(DatabaseService):
                 self.primary_key : id
             }
             result = await self.execute_query(query, params, return_value=True)
-            return result[0]
+            return result[0] if len(result)> 0 else None
         except Exception as e:
             raise e
    
@@ -64,6 +63,7 @@ class UserTable(DatabaseService):
             
             return await self.execute_query(query, params, return_value=True)
         except Exception as e:
+            print(e)
             raise e
         
     async def delete_by_id(self, id:str):

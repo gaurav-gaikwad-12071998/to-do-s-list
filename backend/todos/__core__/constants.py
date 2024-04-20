@@ -8,3 +8,30 @@ ROLE = {
     "EDITOR": "editor",
     "ADMIN": "admin"
 }
+
+MESSAGES = {
+    "USER_NOT_FOUND" : "User not found.",
+    "WRONG_PASSWORD" : "Wrong password.",
+    "USER_NOT_CREATED" : "User not created.",
+    "CANNOT_DELETE_CATEGORY" : "Cannot delete default category"
+}
+
+DEFAULT_CATEGORIES = [
+    "Important",  
+    "Planned",
+    "Personal", 
+    'Work', 
+    "Home", 
+    "Finances", 
+    "Health", 
+    "Learning"
+]
+
+TABLE_NAME_MAPPER = {
+    "ROLE": "role",
+    "USER": "user",
+    "CATEGORY": "category",
+    "USER_CATEGORY": "user_category",
+    "TASK": "task"
+}
+

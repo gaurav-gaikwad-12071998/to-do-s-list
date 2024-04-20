@@ -19,6 +19,7 @@ class CategoryTable(DatabaseService):
             new_category = self.table_class(**category_params)
             session.add(new_category)
             await session.commit()
+            return category_params
         except Exception as e:
             print(e)
             await session.rollback()
